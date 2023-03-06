@@ -1,0 +1,12 @@
+GET http://localhost:3001/
+
+###
+
+POST http://localhost:3001/newPiece
+Content-Type: application/json
+
+{
+    "book": 2,
+    "pieceName": "Test Piece",
+    "techniqueTags": ["test1", "test2"]   
+}
