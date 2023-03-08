@@ -28,10 +28,12 @@ router.post("/newPiece", async (req, res) => {
 });
 
 router.post("/addUser", async (req, res)=>{
+  console.log(req.body)
     const newUser = new User({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         country: req.body.country,
+        email: req.body.email,
         userName: req.body.userName,
         password: req.body.password
     });
