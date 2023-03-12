@@ -4,7 +4,9 @@ const Piece = require("../models/pieces");
 const User = require("../models/users");
 const { checkUserName } = require("../middleware/middleware");
 
-//Get all pieces ==========================================================
+/* =========================================
+||||||||||| Get all pieces ||||||||| |||||||
+============================================ */
 router.get("/", async (req, res) => {
   const allPieces = await Piece.find({});
   console.log(allPieces);
@@ -12,7 +14,9 @@ router.get("/", async (req, res) => {
   res.status(201).json(allPieces);
 });
 
-//Add new piece to database ===============================================
+/* ===========================================
+||||||||||| Add new piece to database ||||||||
+============================================== */
 router.post("/newPiece", async (req, res) => {
   console.log(req.body);
 
@@ -29,7 +33,9 @@ router.post("/newPiece", async (req, res) => {
   }
 });
 
-//Add user to database =====================================================
+/* =========================================
+||||||||||| Add new user to database |||||||
+============================================ */
 router.post("/addUser", checkUserName, async (req, res) => {
   console.log(req.body);
   const newUser = new User({
@@ -49,7 +55,9 @@ router.post("/addUser", checkUserName, async (req, res) => {
   }
 });
 
-//Login user ===============================================================
+/* =======================================
+|||||||||| Login User ||||||||||||||||||||
+========================================== */
 router.post("/login", async (req, res)=>{
   const usr = req.body.userName;
   const pwd = req.body.password;
@@ -65,6 +73,29 @@ router.post("/login", async (req, res)=>{
   }
 })
 
+/* ======================================
+||||||| Get technique tags ||||||||||||||
+========================================= */
+
+router.get('/tags', async (req, res)=>{
+  const getTags = await Piece.find({}, {techniqueTags:1, _id:0});
+  res.status(200).json(getTags)
+})
+
+
+/* ======================================
+||||||||||| Technique Tag Query |||||||||
+========================================= */
+router.post("/techniqueSearch", async (req, res)=>{
+  const tagToSearch = req.body.tagToSearch;
+  console.log(req.body.tagToSearch)
+  try{
+    const getPieces = await Piece.find({techniqueTags: tagToSearch});
+    res.status(200).json(getPieces);
+  }catch(err){
+    res.status(500).send("There was a server error")
+  }
+})
 
 
 module.exports = router;
