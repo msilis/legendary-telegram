@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Piece = require("../models/pieces");
 const User = require("../models/users");
+const Game = require("../models/games")
 const { checkUserName } = require("../middleware/middleware");
 
 /* =========================================
@@ -46,7 +47,7 @@ router.post("/addUser", checkUserName, async (req, res) => {
     userName: req.body.userName,
     password: req.body.password,
   });
-  
+
   try {
     await newUser.save();
     res.status(201).send("User created");
@@ -58,44 +59,58 @@ router.post("/addUser", checkUserName, async (req, res) => {
 /* =======================================
 |||||||||| Login User ||||||||||||||||||||
 ========================================== */
-router.post("/login", async (req, res)=>{
+router.post("/login", async (req, res) => {
   const usr = req.body.userName;
   const pwd = req.body.password;
-  try{
-    const loginUser = await User.findOne({userName: usr, password: pwd});
-    if(!loginUser){
-      res.status(401).send("Username or password incorrect!")
-    }else if(loginUser != null){
-      res.status(200).send("User sucessfully logged in!")
+  try {
+    const loginUser = await User.findOne({ userName: usr, password: pwd });
+    if (!loginUser) {
+      res.status(401).send("Username or password incorrect!");
+    } else if (loginUser != null) {
+      res.status(200).send({ firstName: loginUser.firstName, lastName: loginUser.lastName, email: loginUser.email});
     }
-  }catch(err){
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
-})
+});
 
 /* ======================================
 ||||||| Get technique tags ||||||||||||||
 ========================================= */
 
-router.get('/tags', async (req, res)=>{
-  const getTags = await Piece.find({}, {techniqueTags:1, _id:0});
-  res.status(200).json(getTags)
-})
-
+router.get("/tags", async (req, res) => {
+  const getTags = await Piece.find({}, { techniqueTags: 1, _id: 0 });
+  res.status(200).json(getTags);
+});
 
 /* ======================================
 ||||||||||| Technique Tag Query |||||||||
 ========================================= */
-router.post("/techniqueSearch", async (req, res)=>{
+router.post("/techniqueSearch", async (req, res) => {
   const tagToSearch = req.body.tagToSearch;
-  console.log(req.body.tagToSearch)
-  try{
-    const getPieces = await Piece.find({techniqueTags: tagToSearch});
+  console.log(req.body.tagToSearch);
+  try {
+    const getPieces = await Piece.find({ techniqueTags: tagToSearch });
     res.status(200).json(getPieces);
+  } catch (err) {
+    res.status(500).send("There was a server error");
+  }
+});
+
+/* =======================================
+||||||||| Get Games|||||||||||||||||||||||
+========================================== */
+router.get("/gameSearch", async (req, res)=>{
+  const gameIdeas = [];
+  try{
+    const getGameIdeas = await Game.find({});
+    console.log(getGameIdeas)
+    gameIdeas.push(getGameIdeas)
+    res.status(200).json(gameIdeas);
   }catch(err){
+    console.log(err)
     res.status(500).send("There was a server error")
   }
 })
-
 
 module.exports = router;
