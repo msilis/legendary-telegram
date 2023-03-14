@@ -3,7 +3,9 @@ const router = express.Router();
 const Piece = require("../models/pieces");
 const User = require("../models/users");
 const Game = require("../models/games")
+const SaveGame = require("../models/saveGame")
 const { checkUserName } = require("../middleware/middleware");
+const saveGame = require("../models/saveGame");
 
 /* =========================================
 ||||||||||| Get all pieces ||||||||| |||||||
@@ -67,7 +69,8 @@ router.post("/login", async (req, res) => {
     if (!loginUser) {
       res.status(401).send("Username or password incorrect!");
     } else if (loginUser != null) {
-      res.status(200).send({ firstName: loginUser.firstName, lastName: loginUser.lastName, email: loginUser.email});
+      console.log(loginUser)
+      res.status(200).send({ firstName: loginUser.firstName, lastName: loginUser.lastName, email: loginUser.email, userId: loginUser._id});
     }
   } catch (err) {
     console.log(err);
@@ -105,6 +108,7 @@ router.get("/gameSearch", async (req, res)=>{
   try{
     const getGameIdeas = await Game.find({});
     console.log(getGameIdeas)
+    console.log(getGameIdeas.length, "length")
     gameIdeas.push(getGameIdeas)
     res.status(200).json(gameIdeas);
   }catch(err){
@@ -112,5 +116,79 @@ router.get("/gameSearch", async (req, res)=>{
     res.status(500).send("There was a server error")
   }
 })
+
+/* =======================================
+||||||||| Get Random Game ||||||||||||||||
+========================================== */
+
+router.get("/randomGame", async (req, res)=>{
+  const randomGameIdeas = [];
+  
+  try{
+    const getGameIdeas = await Game.find({});
+    randomGameIdeas.push(getGameIdeas);
+    const randomIdea = Math.floor(Math.random()* randomGameIdeas[0].length)
+    console.log(randomGameIdeas[0][randomIdea], "This should be the random idea")
+    console.log(randomGameIdeas[0].length, "Length")
+    console.log(randomIdea, "Random Index")
+    res.status(200).json(randomGameIdeas[0][randomIdea])
+  }catch(err){
+    console.log(err)
+  }
+}
+)
+
+/* =======================================
+||||||||| Save Game ||||||||||||||||||||||
+========================================== */
+
+router.post("/saveGame", async (req, res)=>{
+  
+  const saveGame = new SaveGame({
+    gameName: req.body.gameName,
+    gameText: req.body.gameText,
+    saveUser: req.body.saveUser
+  });
+  try{
+    const addSaveGame = await saveGame.save();
+    res.status(201).json(addSaveGame);
+  }catch(err){
+    console.log(err)
+  }
+
+});
+
+/* ========================================
+|||||||||| Get user's saved games |||||||||
+=========================================== */
+
+router.post("/getSavedGames", async (req, res)=>{
+  const userId = req.body.saveUser;
+  try{
+    const findUserGames = await saveGame.find({ saveUser: userId });
+    console.log(findUserGames)
+    res.status(200).json(findUserGames);
+
+  }catch(err){
+    console.log(err)
+  }
+});
+
+/* =======================================
+|||||||||| Delete Saved Game ||||||||||||| 
+==========================================*/
+
+router.post("/deleteSavedGame", async (req, res)=>{
+  console.log(req.body)
+  const gameIdToDelete = req.body.gameToDelete;
+  console.log(gameIdToDelete)
+  try{
+    const deleteSavedGame = await saveGame.deleteOne({ _id: gameIdToDelete})
+    res.status(200).json(deleteSavedGame)
+  }catch(err){
+    console.log(err)
+  }
+})
+
 
 module.exports = router;
