@@ -18,4 +18,18 @@ async function checkUserName(req,res,next){
     }
 }
 
-module.exports = { checkUserName }
+//Get user by Id
+
+async function getUserById(req, res, next){
+    let user;
+    const userToFind = req.body.userId;
+    const locateUser = await User.findOne({_id: userToFind});
+    if(locateUser === null){
+        res.status(404).send("User not found in database")
+    }
+    //If user is in database, pass on user info
+    res.user = user;
+    next();
+}
+
+module.exports = { checkUserName, getUserById }

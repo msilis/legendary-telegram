@@ -4,7 +4,7 @@ const Piece = require("../models/pieces");
 const User = require("../models/users");
 const Game = require("../models/games")
 const SaveGame = require("../models/saveGame")
-const { checkUserName } = require("../middleware/middleware");
+const { checkUserName, getUserById } = require("../middleware/middleware");
 const saveGame = require("../models/saveGame");
 
 /* =========================================
@@ -41,7 +41,7 @@ router.post("/newPiece", async (req, res) => {
 ============================================ */
 router.post("/addUser", checkUserName, async (req, res) => {
   console.log(req.body);
-  const newUser = new User({
+  const user = new User({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     country: req.body.country,
@@ -51,7 +51,7 @@ router.post("/addUser", checkUserName, async (req, res) => {
   });
 
   try {
-    await newUser.save();
+    await user.save();
     res.status(201).send("User created");
   } catch (err) {
     console.log(err);
@@ -188,7 +188,25 @@ router.post("/deleteSavedGame", async (req, res)=>{
   }catch(err){
     console.log(err)
   }
+});
+
+/* =======================================
+|||||||||| Update User Info  ||||||||||||| 
+==========================================*/
+
+router.patch("/updateUser", getUserById, async (req, res)=>{
+  if(req.body.firstName != null){
+    res.user.firstName = req.body.firstName
+  }
+  if(req.body.lastname != null){
+    res.user.lastName = req.body.lastName
+  }
+  if(req.body.email != null){
+    res.user.email = req.body.email
+  }
+
 })
+
 
 
 module.exports = router;
