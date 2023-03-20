@@ -195,11 +195,11 @@ router.post("/deleteSavedGame", async (req, res)=>{
 ==========================================*/
 
 router.patch("/updateUser", getUserById, async (req, res)=>{
-  console.log(req.body)
+  
   if(req.body.firstName != null){
     res.user.firstName = req.body.firstName
   }
-  if(req.body.lastname != null){
+  if(req.body.lastName != null){
     res.user.lastName = req.body.lastName
   }
   if(req.body.email != null){
