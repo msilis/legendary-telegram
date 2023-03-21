@@ -4,7 +4,7 @@ const Piece = require("../models/pieces");
 const User = require("../models/users");
 const Game = require("../models/games")
 const SaveGame = require("../models/saveGame")
-const { checkUserName, getUserById } = require("../middleware/middleware");
+const { checkUserName, getUserById, checkToken } = require("../middleware/middleware");
 const saveGame = require("../models/saveGame");
 
 /* =========================================
@@ -213,6 +213,16 @@ router.patch("/updateUser", getUserById, async (req, res)=>{
   }catch(err){
     console.log(err)
   }
+})
+
+/* ========================================
+||||||||| Add Game ||||||||||||||||||||||||
+=========================================== */
+//TODO Finish adding Add Game route 
+//TODO? Maybe this should be in it's own collection?
+
+router.post("/addGame", async (req, res)=>{
+
 })
 
 

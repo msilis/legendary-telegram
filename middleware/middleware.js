@@ -43,10 +43,12 @@ function checkToken(req, res, next) {
     if (jwt.verify(token, "jwt-secret")) {
       req.userId = req.body.userId;
       next();
+    } else {
+        res.status(403).send({msg: "Your token was not verified."})
     }
   } catch (err) {
-    console.log(err);
+    res.send({msg: "There was an error in the token authentication"});
   }
 }
 
-module.exports = { checkUserName, getUserById };
+module.exports = { checkUserName, getUserById, checkToken };
