@@ -4,13 +4,14 @@ const Piece = require("../models/pieces");
 const User = require("../models/users");
 const Game = require("../models/games")
 const SaveGame = require("../models/saveGame")
+const AddGame = require("../models/addGame")
 const { checkUserName, getUserById, checkToken } = require("../middleware/middleware");
 const saveGame = require("../models/saveGame");
 
 /* =========================================
 ||||||||||| Get all pieces ||||||||| |||||||
 ============================================ */
-router.get("/", async (req, res) => {
+router.get("/getPieces", async (req, res) => {
   const allPieces = await Piece.find({});
   console.log(allPieces);
 
@@ -165,7 +166,7 @@ router.post("/saveGame", async (req, res)=>{
 router.post("/getSavedGames", async (req, res)=>{
   const userId = req.body.saveUser;
   try{
-    const findUserGames = await saveGame.find({ saveUser: userId });
+    const findUserGames = await SaveGame.find({ saveUser: userId });
     console.log(findUserGames)
     res.status(200).json(findUserGames);
 
@@ -173,6 +174,23 @@ router.post("/getSavedGames", async (req, res)=>{
     console.log(err)
   }
 });
+
+/* ========================================
+||||||| Get User's Created Games |||||||||||
+==========================================*/
+
+router.post("/getUserCreatedGames", async (req, res)=>{
+  const userId = req.body.userId;
+  console.log(req.body.userId)
+  try{
+    const findCreatedGames = await AddGame.find({saveUser: userId})
+    
+    res.status(200).json(findCreatedGames);
+  }catch(err){
+    res.status(500).send("There was an error with the server")
+  }
+})
+
 
 /* =======================================
 |||||||||| Delete Saved Game ||||||||||||| 
@@ -218,11 +236,22 @@ router.patch("/updateUser", getUserById, async (req, res)=>{
 /* ========================================
 ||||||||| Add Game ||||||||||||||||||||||||
 =========================================== */
-//TODO Finish adding Add Game route 
-//TODO? Maybe this should be in it's own collection?
 
 router.post("/addGame", async (req, res)=>{
-
+  const addGame = new AddGame({
+    gameName: req.body.gameName,
+    gameText: req.body.gameText,
+    gameTechnique: req.body.gameTechnique,
+    gamePieces: req.body.gamePieces,
+    saveUser: req.body.saveUser
+  })
+  try{  
+    const saveAddGame = await addGame.save();
+    res.status(201).send(saveAddGame)
+    console.log("New Game Added")
+  }catch(err){
+    res.status(500).send({msg: "There was an error with the server."})
+  }
 })
 
 

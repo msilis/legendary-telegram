@@ -10,3 +10,30 @@ Content-Type: application/json
     "pieceName": "Test Piece",
     "techniqueTags": ["test1", "test2"]   
 }
+###
+
+POST http://localhost:8080/addGame
+Content-Type: application/json
+
+{
+    "gameName": "Dominoes 2",
+    "gameText": "You know how to play",
+    "gameTechnique": ["listening"],
+    "gamePieces": ["Variation A", "Variation B"],
+    "saveUser": "12345"
+}
+###
+POST http://localhost:8080/getUserCreatedGames
+Content-Type: application/json
+
+{
+    "userId": "640a5a73f25281359a864e54"
+}
+
+###
+POST http://localhost:8080/getSavedGames
+Content-Type: application/json
+
+{
+    "saveUser": "640a5a73f25281359a864e54"
+}
