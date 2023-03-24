@@ -181,7 +181,6 @@ router.post("/getSavedGames", async (req, res)=>{
 
 router.post("/getUserCreatedGames", async (req, res)=>{
   const userId = req.body.userId;
-  console.log(req.body.userId)
   try{
     const findCreatedGames = await AddGame.find({saveUser: userId})
     
@@ -260,10 +259,10 @@ router.post("/addGame", async (req, res)=>{
 =========================================== */
 router.post("/deleteCreated", async (req, res)=>{
   const createdGameToDelete = req.body.gameToDelete
-  console.log(createdGameToDelete)
+  console.log(createdGameToDelete, "createdGameToDelete")
   console.log(req.body)
   try{  
-    const deleteCreatedGame = AddGame.deleteOne({_id: createdGameToDelete});
+    const deleteCreatedGame = await AddGame.deleteOne({_id: createdGameToDelete});
     res.status(201).send(deleteCreatedGame)
   }catch(err){
     res.status(500).send({msg: "There was an errir with the server."})
