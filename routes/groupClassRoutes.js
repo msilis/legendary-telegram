@@ -201,7 +201,7 @@ router.post("/deleteSavedGame", async (req, res)=>{
   const gameIdToDelete = req.body.gameToDelete;
   console.log(gameIdToDelete)
   try{
-    const deleteSavedGame = await saveGame.deleteOne({ _id: gameIdToDelete})
+    const deleteSavedGame = await SaveGame.deleteOne({ _id: gameIdToDelete})
     res.status(200).json(deleteSavedGame)
   }catch(err){
     console.log(err)
@@ -251,6 +251,22 @@ router.post("/addGame", async (req, res)=>{
     console.log("New Game Added")
   }catch(err){
     res.status(500).send({msg: "There was an error with the server."})
+  }
+});
+
+//TODO Create route to delete created game
+/* =========================================
+|||||||||| Delete Created Game |||||||||||||
+=========================================== */
+router.post("/deleteCreated", async (req, res)=>{
+  const createdGameToDelete = req.body.gameToDelete
+  console.log(createdGameToDelete)
+  console.log(req.body)
+  try{  
+    const deleteCreatedGame = AddGame.deleteOne({_id: createdGameToDelete});
+    res.status(201).send(deleteCreatedGame)
+  }catch(err){
+    res.status(500).send({msg: "There was an errir with the server."})
   }
 })
 
