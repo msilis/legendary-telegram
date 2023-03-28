@@ -5,12 +5,14 @@ const User = require("../models/users");
 const Game = require("../models/games");
 const SaveGame = require("../models/saveGame");
 const AddGame = require("../models/addGame");
+const jwt = require("jsonwebtoken");
+const saveGame = require("../models/saveGame");
 const {
   checkUserName,
   getUserById,
   checkToken,
 } = require("../middleware/middleware");
-const saveGame = require("../models/saveGame");
+
 
 /* =========================================
 ||||||||||| Get all pieces ||||||||| |||||||
@@ -73,11 +75,21 @@ router.post("/login", async (req, res) => {
     if (!loginUser) {
       res.status(401).send("Username or password incorrect!");
     } else if (loginUser != null) {
-      res.status(200).send({
+      let token = jwt.sign(
+        {
+          userName: usr,
+        },
+        "jwt-secret",
+        {
+          algorithm: "HS256",
+        }
+      );
+      res.status(200).json({
         firstName: loginUser.firstName,
         lastName: loginUser.lastName,
         email: loginUser.email,
         userId: loginUser._id,
+        token: token
       });
     }
   } catch (err) {
@@ -206,7 +218,7 @@ router.post("/deleteSavedGame", async (req, res) => {
 |||||||||| Update User Info  ||||||||||||| 
 ==========================================*/
 
-router.patch("/updateUser", getUserById, async (req, res) => {
+router.patch("/updateUser", getUserById, checkToken, async (req, res) => {
   if (req.body.firstName != null) {
     res.user.firstName = req.body.firstName;
   }

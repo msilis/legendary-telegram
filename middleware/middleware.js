@@ -38,10 +38,10 @@ async function getUserById(req, res, next) {
 
 //JSON web token authentication
 function checkToken(req, res, next) {
-  let token = req.headers("authorization").split(" ")[1];
+  let token = req.headers["authorization"].split(" ")[1];
   try {
     if (jwt.verify(token, "jwt-secret")) {
-      req.userId = req.body.userId;
+      
       next();
     } else {
         res.status(403).send({msg: "Your token was not verified."})
