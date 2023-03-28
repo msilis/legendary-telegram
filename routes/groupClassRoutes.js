@@ -2,10 +2,14 @@ const express = require("express");
 const router = express.Router();
 const Piece = require("../models/pieces");
 const User = require("../models/users");
-const Game = require("../models/games")
-const SaveGame = require("../models/saveGame")
-const AddGame = require("../models/addGame")
-const { checkUserName, getUserById, checkToken } = require("../middleware/middleware");
+const Game = require("../models/games");
+const SaveGame = require("../models/saveGame");
+const AddGame = require("../models/addGame");
+const {
+  checkUserName,
+  getUserById,
+  checkToken,
+} = require("../middleware/middleware");
 const saveGame = require("../models/saveGame");
 
 /* =========================================
@@ -13,7 +17,6 @@ const saveGame = require("../models/saveGame");
 ============================================ */
 router.get("/getPieces", async (req, res) => {
   const allPieces = await Piece.find({});
-  console.log(allPieces);
 
   res.status(201).json(allPieces);
 });
@@ -70,8 +73,12 @@ router.post("/login", async (req, res) => {
     if (!loginUser) {
       res.status(401).send("Username or password incorrect!");
     } else if (loginUser != null) {
-      console.log(loginUser)
-      res.status(200).send({ firstName: loginUser.firstName, lastName: loginUser.lastName, email: loginUser.email, userId: loginUser._id});
+      res.status(200).send({
+        firstName: loginUser.firstName,
+        lastName: loginUser.lastName,
+        email: loginUser.email,
+        userId: loginUser._id,
+      });
     }
   } catch (err) {
     console.log(err);
@@ -104,74 +111,63 @@ router.post("/techniqueSearch", async (req, res) => {
 /* =======================================
 ||||||||| Get Games|||||||||||||||||||||||
 ========================================== */
-router.get("/gameSearch", async (req, res)=>{
+router.get("/gameSearch", async (req, res) => {
   const gameIdeas = [];
-  try{
+  try {
     const getGameIdeas = await Game.find({});
-    console.log(getGameIdeas)
-    console.log(getGameIdeas.length, "length")
-    gameIdeas.push(getGameIdeas)
     res.status(200).json(gameIdeas);
-  }catch(err){
-    console.log(err)
-    res.status(500).send("There was a server error")
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("There was a server error");
   }
-})
+});
 
 /* =======================================
 ||||||||| Get Random Game ||||||||||||||||
 ========================================== */
 
-router.get("/randomGame", async (req, res)=>{
+router.get("/randomGame", async (req, res) => {
   const randomGameIdeas = [];
-  
-  try{
+
+  try {
     const getGameIdeas = await Game.find({});
     randomGameIdeas.push(getGameIdeas);
-    const randomIdea = Math.floor(Math.random()* randomGameIdeas[0].length)
-    console.log(randomGameIdeas[0][randomIdea], "This should be the random idea")
-    console.log(randomGameIdeas[0].length, "Length")
-    console.log(randomIdea, "Random Index")
-    res.status(200).json(randomGameIdeas[0][randomIdea])
-  }catch(err){
-    console.log(err)
+    const randomIdea = Math.floor(Math.random() * randomGameIdeas[0].length);
+    res.status(200).json(randomGameIdeas[0][randomIdea]);
+  } catch (err) {
+    console.log(err);
   }
-}
-)
+});
 
 /* =======================================
 ||||||||| Save Game ||||||||||||||||||||||
 ========================================== */
 
-router.post("/saveGame", async (req, res)=>{
-  
+router.post("/saveGame", async (req, res) => {
   const saveGame = new SaveGame({
     gameName: req.body.gameName,
     gameText: req.body.gameText,
-    saveUser: req.body.saveUser
+    saveUser: req.body.saveUser,
   });
-  try{
+  try {
     const addSaveGame = await saveGame.save();
     res.status(201).json(addSaveGame);
-  }catch(err){
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
-
 });
 
 /* ========================================
 |||||||||| Get user's saved games |||||||||
 =========================================== */
 
-router.post("/getSavedGames", async (req, res)=>{
+router.post("/getSavedGames", async (req, res) => {
   const userId = req.body.saveUser;
-  try{
+  try {
     const findUserGames = await SaveGame.find({ saveUser: userId });
-    console.log(findUserGames)
     res.status(200).json(findUserGames);
-
-  }catch(err){
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
 });
 
@@ -179,31 +175,30 @@ router.post("/getSavedGames", async (req, res)=>{
 ||||||| Get User's Created Games |||||||||||
 ==========================================*/
 
-router.post("/getUserCreatedGames", async (req, res)=>{
+router.post("/getUserCreatedGames", async (req, res) => {
   const userId = req.body.userId;
-  try{
-    const findCreatedGames = await AddGame.find({saveUser: userId})
-    
-    res.status(200).json(findCreatedGames);
-  }catch(err){
-    res.status(500).send("There was an error with the server")
-  }
-})
+  try {
+    const findCreatedGames = await AddGame.find({ saveUser: userId });
 
+    res.status(200).json(findCreatedGames);
+  } catch (err) {
+    res.status(500).send("There was an error with the server");
+  }
+});
 
 /* =======================================
 |||||||||| Delete Saved Game ||||||||||||| 
 ==========================================*/
 
-router.post("/deleteSavedGame", async (req, res)=>{
-  console.log(req.body)
+router.post("/deleteSavedGame", async (req, res) => {
+  console.log(req.body);
   const gameIdToDelete = req.body.gameToDelete;
-  console.log(gameIdToDelete)
-  try{
-    const deleteSavedGame = await SaveGame.deleteOne({ _id: gameIdToDelete})
-    res.status(200).json(deleteSavedGame)
-  }catch(err){
-    console.log(err)
+  console.log(gameIdToDelete);
+  try {
+    const deleteSavedGame = await SaveGame.deleteOne({ _id: gameIdToDelete });
+    res.status(200).json(deleteSavedGame);
+  } catch (err) {
+    console.log(err);
   }
 });
 
@@ -211,64 +206,75 @@ router.post("/deleteSavedGame", async (req, res)=>{
 |||||||||| Update User Info  ||||||||||||| 
 ==========================================*/
 
-router.patch("/updateUser", getUserById, async (req, res)=>{
-  
-  if(req.body.firstName != null){
-    res.user.firstName = req.body.firstName
+router.patch("/updateUser", getUserById, async (req, res) => {
+  if (req.body.firstName != null) {
+    res.user.firstName = req.body.firstName;
   }
-  if(req.body.lastName != null){
-    res.user.lastName = req.body.lastName
+  if (req.body.lastName != null) {
+    res.user.lastName = req.body.lastName;
   }
-  if(req.body.email != null){
-    res.user.email = req.body.email
+  if (req.body.email != null) {
+    res.user.email = req.body.email;
   }
 
-  try{
+  try {
     const update = await res.user.save();
-    console.log("updated")
-    res.status(200).send({ firstName: update.firstName, lastName: update.lastName, email: update.email})
-  }catch(err){
-    console.log(err)
+    console.log("updated");
+    res.status(200).send({
+      firstName: update.firstName,
+      lastName: update.lastName,
+      email: update.email,
+    });
+  } catch (err) {
+    console.log(err);
   }
-})
+});
 
 /* ========================================
 ||||||||| Add Game ||||||||||||||||||||||||
 =========================================== */
 
-router.post("/addGame", async (req, res)=>{
+router.post("/addGame", async (req, res) => {
   const addGame = new AddGame({
     gameName: req.body.gameName,
     gameText: req.body.gameText,
     gameTechnique: req.body.gameTechnique,
     gamePieces: req.body.gamePieces,
-    saveUser: req.body.saveUser
-  })
-  try{  
+    saveUser: req.body.saveUser,
+  });
+  try {
     const saveAddGame = await addGame.save();
-    res.status(201).send(saveAddGame)
-    console.log("New Game Added")
-  }catch(err){
-    res.status(500).send({msg: "There was an error with the server."})
+    res.status(201).send(saveAddGame);
+    console.log("New Game Added");
+  } catch (err) {
+    res.status(500).send({ msg: "There was an error with the server." });
   }
 });
 
-//TODO Create route to delete created game
+/* =========================================
+|||||||||| Get Game Techniques |||||||||||||
+============================================ */
+
+router.get("/getGameTechniques", async (req, res) => {
+  const getGameTags = await Game.find({}, { gameTechnique: 1, _id: 0 });
+  res.status(200).json(getGameTags);
+});
+
 /* =========================================
 |||||||||| Delete Created Game |||||||||||||
 =========================================== */
-router.post("/deleteCreated", async (req, res)=>{
-  const createdGameToDelete = req.body.gameToDelete
-  console.log(createdGameToDelete, "createdGameToDelete")
-  console.log(req.body)
-  try{  
-    const deleteCreatedGame = await AddGame.deleteOne({_id: createdGameToDelete});
-    res.status(201).send(deleteCreatedGame)
-  }catch(err){
-    res.status(500).send({msg: "There was an errir with the server."})
+router.post("/deleteCreated", async (req, res) => {
+  const createdGameToDelete = req.body.gameToDelete;
+  console.log(createdGameToDelete, "createdGameToDelete");
+  console.log(req.body);
+  try {
+    const deleteCreatedGame = await AddGame.deleteOne({
+      _id: createdGameToDelete,
+    });
+    res.status(201).send(deleteCreatedGame);
+  } catch (err) {
+    res.status(500).send({ msg: "There was an errir with the server." });
   }
-})
-
-
+});
 
 module.exports = router;

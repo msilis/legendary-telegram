@@ -37,3 +37,7 @@ Content-Type: application/json
 {
     "saveUser": "640a5a73f25281359a864e54"
 }
+
+###
+
+GET http://localhost:8080/getGameTechniques
