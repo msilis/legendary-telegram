@@ -38,17 +38,23 @@ async function getUserById(req, res, next) {
 
 //JSON web token authentication
 function checkToken(req, res, next) {
-  let token = req.headers["authorization"].split(" ")[1];
-  try {
-    if (jwt.verify(token, "jwt-secret")) {
-      
-      next();
-    } else {
-        res.status(403).send({msg: "Your token was not verified."})
+  
+  if(req.headers["authorization"] !== undefined){
+    let token = req.headers["authorization"].split(" ")[1];
+    try {
+      if (jwt.verify(token, "jwt-secret")) {
+        
+        next();
+      } else {
+          res.status(403).send({msg: "Your token was not verified."})
+      }
+    } catch (err) {
+      res.send({msg: "There was an error in the token authentication"});
     }
-  } catch (err) {
-    res.send({msg: "There was an error in the token authentication"});
+  }else {
+    res.status(401).send("You do not have permission to view this.")
   }
+  
 }
 
 module.exports = { checkUserName, getUserById, checkToken };

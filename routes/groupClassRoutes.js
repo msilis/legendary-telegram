@@ -26,7 +26,7 @@ router.get("/getPieces", async (req, res) => {
 /* ===========================================
 ||||||||||| Add new piece to database ||||||||
 ============================================== */
-router.post("/newPiece", async (req, res) => {
+router.post("/newPiece", checkToken, async (req, res) => {
   console.log(req.body);
 
   const addPiece = new Piece({
@@ -138,7 +138,7 @@ router.get("/gameSearch", async (req, res) => {
 ||||||||| Get Random Game ||||||||||||||||
 ========================================== */
 
-router.get("/randomGame", async (req, res) => {
+router.get("/randomGame", checkToken, async (req, res) => {
   const randomGameIdeas = [];
 
   try {
@@ -203,15 +203,41 @@ router.post("/getUserCreatedGames", async (req, res) => {
 ==========================================*/
 
 router.post("/deleteSavedGame", async (req, res) => {
-  console.log(req.body);
   const gameIdToDelete = req.body.gameToDelete;
-  console.log(gameIdToDelete);
   try {
     const deleteSavedGame = await SaveGame.deleteOne({ _id: gameIdToDelete });
     res.status(200).json(deleteSavedGame);
   } catch (err) {
     console.log(err);
   }
+});
+
+/* ========================================
+|||||||||| Edit Created Game ||||||||||||||
+=========================================== */
+
+router.patch("/editCreated", async (req, res) => {
+  if(req.body.gameName != null){
+    res.addGame.gameName = req.body.gameName;
+  }
+  if(req.body.gameText != null){
+    res.addGame.gameText = req.body.gameText;
+  }
+  if(req.body.gameTechnique != null){
+    res.addGame.gameTechnique = req.body.gameTechnique
+  }
+  if(req.body.gamePieces != null){
+    res.addGame.gamePieces = req.body.gamePieces;
+  }
+
+  //TODO finish setting up update game route
+  try{
+
+  }catch(err){
+    console.log(err);
+    res.status(500).send("There was an error with the server")
+  }
+  
 });
 
 /* =======================================
@@ -239,6 +265,7 @@ router.patch("/updateUser", getUserById, checkToken, async (req, res) => {
     });
   } catch (err) {
     console.log(err);
+    res.status(500).send("There was an error with the server")
   }
 });
 
