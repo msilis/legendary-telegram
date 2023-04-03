@@ -4,6 +4,7 @@
 
 //Bring in JWT to use for authentication
 const jwt = require("jsonwebtoken");
+const addGame = require("../models/addGame");
 
 //Check if username exists ===============================================
 const User = require("../models/users");
@@ -36,25 +37,41 @@ async function getUserById(req, res, next) {
   next();
 }
 
-//JSON web token authentication
+//Get created game by Id ==================================================
+async function getGameById(req, res, next) {
+  let editGame;
+  console.log(req.params.id, "request body");
+  const gameToFind = req.params.id;
+  const locateGameToEdit = await addGame.findOne({ _id: gameToFind });
+  //If game isn't found in database, send 404 response
+  if (locateGameToEdit === null) {
+    res.status(404).send("Game not found");
+  } else {
+    //If game is found, pass along game info
+    console.log(gameToFind, "game to find - from middleware");
+    console.log(locateGameToEdit, "locateGameToEdit - from middleware");
+    editGame = locateGameToEdit;
+    res.editGame = editGame;
+    next();
+  }
+}
+
+//JSON web token authentication ===============================================
 function checkToken(req, res, next) {
-  
-  if(req.headers["authorization"] !== undefined){
+  if (req.headers["authorization"] !== undefined) {
     let token = req.headers["authorization"].split(" ")[1];
     try {
       if (jwt.verify(token, "jwt-secret")) {
-        
         next();
       } else {
-          res.status(403).send({msg: "Your token was not verified."})
+        res.status(403).send({ msg: "Your token was not verified." });
       }
     } catch (err) {
-      res.send({msg: "There was an error in the token authentication"});
+      res.send({ msg: "There was an error in the token authentication" });
     }
-  }else {
-    res.status(401).send("You do not have permission to view this.")
+  } else {
+    res.status(401).send("You do not have permission to view this.");
   }
-  
 }
 
-module.exports = { checkUserName, getUserById, checkToken };
+module.exports = { checkUserName, getUserById, checkToken, getGameById };

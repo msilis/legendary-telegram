@@ -6,13 +6,12 @@ const Game = require("../models/games");
 const SaveGame = require("../models/saveGame");
 const AddGame = require("../models/addGame");
 const jwt = require("jsonwebtoken");
-const saveGame = require("../models/saveGame");
 const {
   checkUserName,
   getUserById,
   checkToken,
+  getGameById,
 } = require("../middleware/middleware");
-
 
 /* =========================================
 ||||||||||| Get all pieces ||||||||| |||||||
@@ -89,7 +88,7 @@ router.post("/login", async (req, res) => {
         lastName: loginUser.lastName,
         email: loginUser.email,
         userId: loginUser._id,
-        token: token
+        token: token,
       });
     }
   } catch (err) {
@@ -198,6 +197,16 @@ router.post("/getUserCreatedGames", async (req, res) => {
   }
 });
 
+/* =========================================
+|||||||||||| Get User's Created Game by ID|||
+============================================ */
+
+router.get("/getOneUserGame/:id", getGameById, async (req, res) => {
+  console.log(res.editGame.gameName, "should be game name");
+
+  res.status(200).send(res.editGame);
+});
+
 /* =======================================
 |||||||||| Delete Saved Game ||||||||||||| 
 ==========================================*/
@@ -216,28 +225,31 @@ router.post("/deleteSavedGame", async (req, res) => {
 |||||||||| Edit Created Game ||||||||||||||
 =========================================== */
 
-router.patch("/editCreated", async (req, res) => {
-  if(req.body.gameName != null){
-    res.addGame.gameName = req.body.gameName;
+router.patch("/editCreated/:id", getGameById, async (req, res) => {
+  console.log(req.body, "request");
+  if (req.body.gameName !== null) {
+    res.editGame.gameName = req.body.gameName;
   }
-  if(req.body.gameText != null){
-    res.addGame.gameText = req.body.gameText;
+  if (req.body.gamePieces !== null) {
+    res.editGame.gamePieces = req.body.gamePieces;
   }
-  if(req.body.gameTechnique != null){
-    res.addGame.gameTechnique = req.body.gameTechnique
+  if (req.body.gameTechnique !== null) {
+    res.editGame.gameTechnique = req.body.gameTechnique;
   }
-  if(req.body.gamePieces != null){
-    res.addGame.gamePieces = req.body.gamePieces;
+  if (req.body.gameText !== null) {
+    res.editGame.gameText = req.body.gameText;
   }
 
-  //TODO finish setting up update game route
-  try{
+  res.editGame.saveUser = req.body.saveUser;
+  console.log(res.editGame, "res body");
+  try {
+    const updateGame = await res.editGame.save();
 
-  }catch(err){
+    res.status(200).send(updateGame);
+  } catch (err) {
     console.log(err);
-    res.status(500).send("There was an error with the server")
+    res.status(500).send({ message: err.message });
   }
-  
 });
 
 /* =======================================
@@ -265,7 +277,7 @@ router.patch("/updateUser", getUserById, checkToken, async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(500).send("There was an error with the server")
+    res.status(500).send("There was an error with the server");
   }
 });
 

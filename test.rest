@@ -41,3 +41,6 @@ Content-Type: application/json
 ###
 
 GET http://localhost:8080/getGameTechniques
+
+###
+GET http://localhost:8080/getOneUserGame/64282a3760c7ef0c5c686de3
