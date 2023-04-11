@@ -5,6 +5,7 @@ const User = require("../models/users");
 const Game = require("../models/games");
 const SaveGame = require("../models/saveGame");
 const AddGame = require("../models/addGame");
+const AddVoteGame = require("../models/addVoteGame")
 const jwt = require("jsonwebtoken");
 const {
   checkUserName,
@@ -126,7 +127,7 @@ router.get("/gameSearch", async (req, res) => {
   const gameIdeas = [];
   try {
     const getGameIdeas = await Game.find({});
-    res.status(200).json(gameIdeas);
+    res.status(200).json(getGameIdeas);
   } catch (err) {
     console.log(err);
     res.status(500).send("There was a server error");
@@ -298,9 +299,85 @@ router.post("/addGame", async (req, res) => {
     res.status(201).send(saveAddGame);
     console.log("New Game Added");
   } catch (err) {
-    res.status(500).send({ msg: "There was an error with the server." });
+    res.status(500).send({ msg: "There was an error with the server while trying to add the game." });
   }
 });
+
+/* =========================================
+||||||||| Add game for voting |||||||||||||||
+============================================ */
+
+router.post("/addGameForVote", async (req, res) => {
+  const addVoteGame = new AddVoteGame({
+    gameName: req.body.gameName,
+    gameText: req.body.gameText,
+    gameTechnique: req.body.gameTechnique,
+    gamePieces: req.body.gamePieces,
+    saveUser: req.body.saveUser,
+    yesVote: req.body.yesVote,
+    noVote: req.body.noVote
+  });
+  try{
+    const saveAddVoteGame = await addVoteGame.save();
+    res.status(201).send(saveAddVoteGame)
+    console.log("Game submitted for voting")
+  }catch(err){
+    res.status(500).send({msg: "There was an error submitting the game to voting."})
+  }
+})
+
+/* =========================================
+|||||||| Get Vote Games ||||||||||||||||||||
+============================================ */
+
+router.get("/gamesForVote", async (req, res)=>{
+  try {
+    const getGamesForVote = await AddVoteGame.find();
+    res.status(200).json(getGamesForVote);
+  }
+ catch(err){
+  res.status(500).send({msg: "There was an error getting the games for vote."})
+ }
+  
+})
+
+/* ==========================================
+||||||||| Track votes |||||||||||||||||||||||
+============================================= */
+
+router.post("/trackVote", async (req, res)=>{
+  /* 0 is no vote, 1 is yes vote */
+  let whichVote;
+  const filter = { _id: req.body.gameId };
+  const options = { upsert: false };
+  if(req.body.updateVoteValue === 0){
+    whichVote = {
+      $set: {
+        noVote: req.body.noVote
+      }
+    }
+  }else if(req.body.updateVoteValue === 1){
+    whichVote = {
+      $set: {
+        yesVote: req.body.yesVote
+      },
+      $set: {
+        voteUsers: req.body.userId
+      },
+      $inc: {
+        yesVote: 1
+      }
+    }
+  }
+  try{
+    const voteUpdate = await AddVoteGame.updateOne(filter, whichVote, options);
+    console.log("Vote has been updated: ", voteUpdate)
+    res.status(201).json(voteUpdate)
+  }catch(err){
+    res.status(500).send({msg: "There was an error updating the vote count"})
+  }
+  
+})
 
 /* =========================================
 |||||||||| Get Game Techniques |||||||||||||
