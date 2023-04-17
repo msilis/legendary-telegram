@@ -44,3 +44,16 @@ GET http://localhost:8080/getGameTechniques
 
 ###
 GET http://localhost:8080/getOneUserGame/64282a3760c7ef0c5c686de3
+
+###
+POST http://localhost:8080/trackVote
+Content-Type: application/json
+
+{
+    "gameId": "64354f5e4d31dbd8d3f93049",
+    "updateVoteValue": 1,
+    "userId": "640a5a73f25281359a864e59"
+}
+
+###
+GET http://localhost:8080/getVoteTotals

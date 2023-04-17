@@ -5,6 +5,8 @@
 //Bring in JWT to use for authentication
 const jwt = require("jsonwebtoken");
 const addGame = require("../models/addGame");
+const addVoteGame = require("../models/addVoteGame");
+const { ObjectId } = require('mongoose').Types;
 
 //Check if username exists ===============================================
 const User = require("../models/users");
@@ -56,6 +58,33 @@ async function getGameById(req, res, next) {
   }
 }
 
+//Check if user has already voted on game
+
+async function checkUserVote(req, res, next){
+  console.log(req.body)
+  let voteGame;
+  const userIdToCheck = req.body.userId
+  
+  const checkGameId = req.body.gameId
+  console.log("userIdToCheck:", userIdToCheck)
+  console.log("checkGameId:", checkGameId)
+  const gameIdToCheck = new ObjectId(checkGameId)
+  const locateUserInVoteRecord = await addVoteGame.findOne({_id: gameIdToCheck, voteUsers: {$elemMatch: {$eq: userIdToCheck}}})
+  //If userId is found, return that user already has voted on game
+  console.log(locateUserInVoteRecord, "locateUser")
+  /* console.log(locateUserInVoteRecord.voteUsers, "voteUsers Array") */
+  if (locateUserInVoteRecord !== null){
+    console.log("User already voted")
+    res.status(409).send({msg: "User has already voted for this game"})
+  } else {
+    //If user isn't found, pass along vote info
+    console.log("User has NOT voted on this game")
+    voteGame = req.body,
+    res.voteGame = voteGame;
+    next()
+  }
+};
+
 //JSON web token authentication ===============================================
 function checkToken(req, res, next) {
   if (req.headers["authorization"] !== undefined) {
@@ -74,4 +103,4 @@ function checkToken(req, res, next) {
   }
 }
 
-module.exports = { checkUserName, getUserById, checkToken, getGameById };
+module.exports = { checkUserName, getUserById, checkToken, getGameById, checkUserVote };

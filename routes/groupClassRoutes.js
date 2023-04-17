@@ -5,22 +5,28 @@ const User = require("../models/users");
 const Game = require("../models/games");
 const SaveGame = require("../models/saveGame");
 const AddGame = require("../models/addGame");
-const AddVoteGame = require("../models/addVoteGame")
+const AddVoteGame = require("../models/addVoteGame");
 const jwt = require("jsonwebtoken");
 const {
   checkUserName,
   getUserById,
   checkToken,
   getGameById,
+  checkUserVote,
 } = require("../middleware/middleware");
 
 /* =========================================
 ||||||||||| Get all pieces ||||||||| |||||||
 ============================================ */
 router.get("/getPieces", async (req, res) => {
-  const allPieces = await Piece.find({});
-
-  res.status(201).json(allPieces);
+  try{
+    const allPieces = await Piece.find({})
+    res.status(201).json(allPieces);
+  }catch(err){
+    console.log(err)
+    res.status(500).send({msg: "There was an error getting the pieces"})
+  }
+  
 });
 
 /* ===========================================
@@ -39,6 +45,7 @@ router.post("/newPiece", checkToken, async (req, res) => {
     res.status(200).json(sendPiece);
   } catch (err) {
     console.log(err);
+    res.status(500).send({msg: "There was an error adding a new piece."})
   }
 });
 
@@ -61,6 +68,7 @@ router.post("/addUser", checkUserName, async (req, res) => {
     res.status(201).send("User created");
   } catch (err) {
     console.log(err);
+    res.status(500).send({msg: "There was an error adding the user."})
   }
 });
 
@@ -94,6 +102,7 @@ router.post("/login", async (req, res) => {
     }
   } catch (err) {
     console.log(err);
+    res.status(500).send({msg: "There was an error logging in."})
   }
 });
 
@@ -102,8 +111,14 @@ router.post("/login", async (req, res) => {
 ========================================= */
 
 router.get("/tags", async (req, res) => {
-  const getTags = await Piece.find({}, { techniqueTags: 1, _id: 0 });
+  try{
+    const getTags = await Piece.find({}, { techniqueTags: 1, _id: 0 });
   res.status(200).json(getTags);
+  }catch(err){
+    console.log(err)
+    res.status(500).send({msg: "There was a server error."})
+  }
+  
 });
 
 /* ======================================
@@ -116,7 +131,7 @@ router.post("/techniqueSearch", async (req, res) => {
     const getPieces = await Piece.find({ techniqueTags: tagToSearch });
     res.status(200).json(getPieces);
   } catch (err) {
-    res.status(500).send("There was a server error");
+    res.status(500).send("There was an error getting technique tags for pieces");
   }
 });
 
@@ -130,7 +145,7 @@ router.get("/gameSearch", async (req, res) => {
     res.status(200).json(getGameIdeas);
   } catch (err) {
     console.log(err);
-    res.status(500).send("There was a server error");
+    res.status(500).send("There was an error searching for games");
   }
 });
 
@@ -148,6 +163,7 @@ router.get("/randomGame", checkToken, async (req, res) => {
     res.status(200).json(randomGameIdeas[0][randomIdea]);
   } catch (err) {
     console.log(err);
+    res.status(500).send({msg: "There was an error getting the random game"})
   }
 });
 
@@ -166,6 +182,7 @@ router.post("/saveGame", async (req, res) => {
     res.status(201).json(addSaveGame);
   } catch (err) {
     console.log(err);
+    res.status(500).send({msg: "There was an error saving the game"})
   }
 });
 
@@ -180,6 +197,7 @@ router.post("/getSavedGames", async (req, res) => {
     res.status(200).json(findUserGames);
   } catch (err) {
     console.log(err);
+    res.status(500).send({msg: "There was an error getting saved games"})
   }
 });
 
@@ -204,7 +222,6 @@ router.post("/getUserCreatedGames", async (req, res) => {
 
 router.get("/getOneUserGame/:id", getGameById, async (req, res) => {
   console.log(res.editGame.gameName, "should be game name");
-
   res.status(200).send(res.editGame);
 });
 
@@ -219,6 +236,7 @@ router.post("/deleteSavedGame", async (req, res) => {
     res.status(200).json(deleteSavedGame);
   } catch (err) {
     console.log(err);
+    res.status(500).send({msg: "There was an error deleting the game"})
   }
 });
 
@@ -299,7 +317,7 @@ router.post("/addGame", async (req, res) => {
     res.status(201).send(saveAddGame);
     console.log("New Game Added");
   } catch (err) {
-    res.status(500).send({ msg: "There was an error with the server while trying to add the game." });
+    res.status(500).send({msg: "There was an error with the server while trying to add the game."});
   }
 });
 
@@ -315,77 +333,98 @@ router.post("/addGameForVote", async (req, res) => {
     gamePieces: req.body.gamePieces,
     saveUser: req.body.saveUser,
     yesVote: req.body.yesVote,
-    noVote: req.body.noVote
+    noVote: req.body.noVote,
   });
-  try{
+  try {
     const saveAddVoteGame = await addVoteGame.save();
-    res.status(201).send(saveAddVoteGame)
-    console.log("Game submitted for voting")
-  }catch(err){
-    res.status(500).send({msg: "There was an error submitting the game to voting."})
+    res.status(201).send(saveAddVoteGame);
+    console.log("Game submitted for voting");
+  } catch (err) {
+    res.status(500).send({ msg: "There was an error submitting the game to voting." });
   }
-})
+});
 
 /* =========================================
 |||||||| Get Vote Games ||||||||||||||||||||
 ============================================ */
 
-router.get("/gamesForVote", async (req, res)=>{
+router.get("/gamesForVote", async (req, res) => {
   try {
     const getGamesForVote = await AddVoteGame.find();
     res.status(200).json(getGamesForVote);
+  } catch (err) {
+    res.status(500).send({ msg: "There was an error getting the games for vote." });
   }
- catch(err){
-  res.status(500).send({msg: "There was an error getting the games for vote."})
- }
-  
-})
+});
 
 /* ==========================================
 ||||||||| Track votes |||||||||||||||||||||||
 ============================================= */
 
-router.post("/trackVote", async (req, res)=>{
+router.post("/trackVote", checkUserVote, async (req, res) => {
   /* 0 is no vote, 1 is yes vote */
   let whichVote;
   const filter = { _id: req.body.gameId };
   const options = { upsert: false };
-  if(req.body.updateVoteValue === 0){
+  if (req.body.updateVoteValue === 0) {
     whichVote = {
       $set: {
-        noVote: req.body.noVote
-      }
-    }
-  }else if(req.body.updateVoteValue === 1){
-    whichVote = {
-      $set: {
-        yesVote: req.body.yesVote
+        noVote: req.body.noVote,
       },
-      $set: {
-        voteUsers: req.body.userId
-      },
+      $push: { voteUsers: req.body.userId },
       $inc: {
-        yesVote: 1
-      }
-    }
+        noVote: 1,
+      },
+    };
+  } else if (req.body.updateVoteValue === 1) {
+    whichVote = {
+      $set: {
+        yesVote: req.body.yesVote,
+      },
+      $push: { voteUsers: req.body.userId },
+      $inc: {
+        yesVote: 1,
+      },
+    };
   }
-  try{
+  try {
     const voteUpdate = await AddVoteGame.updateOne(filter, whichVote, options);
-    console.log("Vote has been updated: ", voteUpdate)
-    res.status(201).json(voteUpdate)
+    console.log("Vote has been updated: ", voteUpdate);
+    res.status(201).json(voteUpdate);
+  } catch (err) {
+    res.status(500).send({ msg: "There was an error updating the vote count" });
+  }
+});
+
+/* =========================================
+|||||||||| Get only votes ||||||||||||||||||
+============================================ */
+
+router.get("/getVoteTotals", async (req, res)=> {
+  try{
+    const getVotes = await AddVoteGame.find({}, {_id: 1, yesVote: 1, noVote: 1});
+    console.log(getVotes)
+    res.status(200).json(getVotes)
   }catch(err){
-    res.status(500).send({msg: "There was an error updating the vote count"})
+    res.status(500).send({msg: "There was an error getting the votes for games"})
+    console.log(err);
   }
   
-})
+});
 
 /* =========================================
 |||||||||| Get Game Techniques |||||||||||||
 ============================================ */
 
 router.get("/getGameTechniques", async (req, res) => {
-  const getGameTags = await Game.find({}, { gameTechnique: 1, _id: 0 });
-  res.status(200).json(getGameTags);
+  try{
+    const getGameTags = await Game.find({}, { gameTechnique: 1, _id: 0 });
+    res.status(200).json(getGameTags);
+  }catch(err){
+    console.log(err)
+    res.status(500).send({msg: "There was an error fetching techniques"})
+  }
+  
 });
 
 /* =========================================
