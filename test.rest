@@ -57,3 +57,12 @@ Content-Type: application/json
 
 ###
 GET http://localhost:8080/getVoteTotals
+
+###
+//Check to see what games user has voted on
+POST http://localhost:8080/getUserVotes
+Content-Type: application/json
+
+{
+    "userId": "640a5a73f25281359a864e54"
+}

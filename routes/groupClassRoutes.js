@@ -412,6 +412,28 @@ router.get("/getVoteTotals", async (req, res)=> {
   
 });
 
+/* ==========================================
+||||||||| Find all games user has voted on |||
+============================================= */
+
+
+router.post("/getUserVotes", async (req, res)=> {
+  const userToCheck = req.body.userId
+  console.log(req.body, "From getUserVotes endpoint")
+  try{
+    const findUserVotedGames = await AddVoteGame.find({voteUsers: {$elemMatch: {$eq: userToCheck }}}).select("_id");
+    if(findUserVotedGames === null){
+      res.status(404).send({msg: "No games found that user has voted on"})
+    }else {
+      res.status(200).json(findUserVotedGames)
+    }
+  }
+  catch(err){
+    console.log(err);
+    res.status(500).send({msg: "There was an error fetching the games a user has voted on."})
+  }
+})
+
 /* =========================================
 |||||||||| Get Game Techniques |||||||||||||
 ============================================ */

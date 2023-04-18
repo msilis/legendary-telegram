@@ -71,8 +71,7 @@ async function checkUserVote(req, res, next){
   const gameIdToCheck = new ObjectId(checkGameId)
   const locateUserInVoteRecord = await addVoteGame.findOne({_id: gameIdToCheck, voteUsers: {$elemMatch: {$eq: userIdToCheck}}})
   //If userId is found, return that user already has voted on game
-  console.log(locateUserInVoteRecord, "locateUser")
-  /* console.log(locateUserInVoteRecord.voteUsers, "voteUsers Array") */
+  
   if (locateUserInVoteRecord !== null){
     console.log("User already voted")
     res.status(409).send({msg: "User has already voted for this game"})
