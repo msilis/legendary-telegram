@@ -348,7 +348,7 @@ router.post("/addGameForVote", async (req, res) => {
 |||||||| Get Vote Games ||||||||||||||||||||
 ============================================ */
 
-router.get("/gamesForVote", async (req, res) => {
+router.post("/gamesForVote", checkToken, async (req, res) => {
   try {
     const getGamesForVote = await AddVoteGame.find();
     res.status(200).json(getGamesForVote);
@@ -361,7 +361,7 @@ router.get("/gamesForVote", async (req, res) => {
 ||||||||| Track votes |||||||||||||||||||||||
 ============================================= */
 
-router.post("/trackVote", checkUserVote, async (req, res) => {
+router.post("/trackVote", checkUserVote, checkToken, async (req, res) => {
   /* 0 is no vote, 1 is yes vote */
   let whichVote;
   const filter = { _id: req.body.gameId };
@@ -419,7 +419,6 @@ router.get("/getVoteTotals", async (req, res)=> {
 
 router.post("/getUserVotes", async (req, res)=> {
   const userToCheck = req.body.userId
-  console.log(req.body, "From getUserVotes endpoint")
   try{
     const findUserVotedGames = await AddVoteGame.find({voteUsers: {$elemMatch: {$eq: userToCheck }}}).select("_id");
     if(findUserVotedGames === null){

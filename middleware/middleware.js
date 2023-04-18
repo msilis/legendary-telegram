@@ -86,6 +86,7 @@ async function checkUserVote(req, res, next){
 
 //JSON web token authentication ===============================================
 function checkToken(req, res, next) {
+  console.log(req.headers)
   if (req.headers["authorization"] !== undefined) {
     let token = req.headers["authorization"].split(" ")[1];
     try {
@@ -95,10 +96,10 @@ function checkToken(req, res, next) {
         res.status(403).send({ msg: "Your token was not verified." });
       }
     } catch (err) {
-      res.send({ msg: "There was an error in the token authentication" });
+      res.status(401).send({ msg: "There was an error in the token authentication" });
     }
   } else {
-    res.status(401).send("You do not have permission to view this.");
+    res.status(401).send({msg: "You do not have permission to view this."});
   }
 }
 
