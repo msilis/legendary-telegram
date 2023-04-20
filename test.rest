@@ -66,3 +66,20 @@ Content-Type: application/json
 {
     "userId": "640a5a73f25281359a864e54"
 }
+###
+POST http://10.128.172.126:5173/login
+Content-Type: application/json
+
+{
+    "password": "pass",
+    "userName": "miks"
+}
+
+###
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+    "password": "pass",
+    "userName": "miks"
+}

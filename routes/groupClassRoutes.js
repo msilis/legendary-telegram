@@ -78,6 +78,7 @@ router.post("/addUser", checkUserName, async (req, res) => {
 router.post("/login", async (req, res) => {
   const usr = req.body.userName;
   const pwd = req.body.password;
+  console.log(usr, pwd)
   try {
     const loginUser = await User.findOne({ userName: usr, password: pwd });
     if (!loginUser) {
@@ -92,12 +93,14 @@ router.post("/login", async (req, res) => {
           algorithm: "HS256",
         }
       );
+      /* res.header("Access-Control-Allow-Credentials", "true") */
+      res.cookie('jwt', token, {httpOnly: true});
       res.status(200).json({
         firstName: loginUser.firstName,
         lastName: loginUser.lastName,
         email: loginUser.email,
         userId: loginUser._id,
-        token: token,
+        /* token: token */
       });
     }
   } catch (err) {
