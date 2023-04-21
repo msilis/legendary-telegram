@@ -20,7 +20,12 @@ const addGameSchema = new mongoose.Schema({
     saveUser: {
         type: String,
         required: true
+    },
+    username: {
+        type: String,
+        required: false
     }
+
 }, {collection: "newGames"});
 
 module.exports = mongoose.model("AddGame", addGameSchema);

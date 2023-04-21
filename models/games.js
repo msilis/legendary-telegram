@@ -16,6 +16,10 @@ const gameSchema = new mongoose.Schema({
     gamePieces: {
         type: Array,
         required: false
+    },
+    gameGoal: {
+        type: String,
+        required: true
     }
 
 }, {collection: "gameIdeas"});

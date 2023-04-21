@@ -21,6 +21,10 @@ const addVoteGameSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    username: {
+        type: String,
+        required: false
+    },
     yesVote: {
         type: Number,
         required: true
