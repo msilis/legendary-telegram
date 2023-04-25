@@ -83,3 +83,15 @@ Content-Type: application/json
     "password": "pass",
     "userName": "miks"
 }
+
+###
+POST http://localhost:8080/techniqueSearch
+Content-Type: application/json
+
+{
+    "tagToSearch": "staccato"
+}
+
+###
+GET http://localhost:8080/gameSearch
+Content-Type: application/json
