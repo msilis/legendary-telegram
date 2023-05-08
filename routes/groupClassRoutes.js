@@ -6,6 +6,7 @@ const Game = require("../models/games");
 const SaveGame = require("../models/saveGame");
 const AddGame = require("../models/addGame");
 const AddVoteGame = require("../models/addVoteGame");
+const AddPermenantGame = require("../models/permenantGame")
 const jwt = require("jsonwebtoken");
 const {
   checkUserName,
@@ -137,6 +138,21 @@ router.post("/techniqueSearch", async (req, res) => {
       .send("There was an error getting technique tags for pieces");
   }
 });
+
+/* =======================================
+|||||||||| Game Technique ||||||||||||||||
+========================================== */
+
+router.get("/gameTechniques", async (req, res) => {
+  try{
+    const getGameTechniques = await Game.find({}, { gameTechnique: 1, _id: 0});
+    res.status(200).json(getGameTechniques);
+  }catch(err) {
+    console.log(err)
+    res.status(500).send({ msg: "There was an error getting the game techniques."})
+  }
+  
+})
 
 /* =======================================
 ||||||||| Get Games|||||||||||||||||||||||
@@ -362,7 +378,7 @@ router.post("/addGameForVote", async (req, res) => {
 router.post("/gamesForVote", checkToken, async (req, res) => {
   try {
     const getGamesForVote = await AddVoteGame.find();
-    console.log(getGamesForVote)
+    console.log(getGamesForVote, "getGamesForVote")
     res.status(200).json(getGamesForVote);
   } catch (err) {
     res
@@ -377,9 +393,11 @@ router.post("/gamesForVote", checkToken, async (req, res) => {
 
 router.post("/trackVote", checkUserVote, checkToken, async (req, res) => {
   /* 0 is no vote, 1 is yes vote */
+  console.log(req.body, "from trackVote")
   let whichVote;
   const filter = { _id: req.body.gameId };
   const options = { upsert: false };
+  console.log(req.body, "from trackVote")
   if (req.body.updateVoteValue === 0) {
     whichVote = {
       $set: {
@@ -404,7 +422,22 @@ router.post("/trackVote", checkUserVote, checkToken, async (req, res) => {
   try {
     const voteUpdate = await AddVoteGame.updateOne(filter, whichVote, options);
     console.log("Vote has been updated: ", voteUpdate);
-    res.status(201).json(voteUpdate);
+    const getVoteTotal = await AddVoteGame.findOne({ _id: req.body.gameId})
+    //Add game here
+    if(getVoteTotal.yesVote >= 22){
+      const addToPermenantCollection = await AddPermenantGame.create({
+        gameName: getVoteTotal.gameName,
+        gameText: getVoteTotal.gameText,
+        gameTechnique: getVoteTotal.gameTechnique,
+        gamePieces: getVoteTotal.gamePieces,
+        saveUser: getVoteTotal.saveUser,
+        username: getVoteTotal.username,
+      })
+      res.status(201).send(addToPermenantCollection);
+      console.log("Should have been added to permenant collection")
+    }else{
+      res.status(201).json(voteUpdate);
+    }
   } catch (err) {
     res.status(500).send({ msg: "There was an error updating the vote count" });
   }
@@ -420,7 +453,7 @@ router.get("/getVoteTotals", async (req, res) => {
       {},
       { _id: 1, yesVote: 1, noVote: 1 }
     );
-    console.log(getVotes);
+    console.log(getVotes, "from getVotes");
     res.status(200).json(getVotes);
   } catch (err) {
     res
