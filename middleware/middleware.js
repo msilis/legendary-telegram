@@ -61,10 +61,8 @@ async function getGameById(req, res, next) {
 //Check if user has already voted on game
 
 async function checkUserVote(req, res, next) {
-  console.log(req.body);
   let voteGame;
   const userIdToCheck = req.body.userId;
-
   const checkGameId = req.body.gameId;
   console.log("userIdToCheck:", userIdToCheck);
   console.log("checkGameId:", checkGameId);
@@ -73,6 +71,7 @@ async function checkUserVote(req, res, next) {
     _id: gameIdToCheck,
     voteUsers: { $elemMatch: { $eq: userIdToCheck } },
   });
+  console.log(locateUserInVoteRecord, "locateUserInVoteRecord")
   //If userId is found, return that user already has voted on game
 
   if (locateUserInVoteRecord !== null) {
