@@ -98,7 +98,10 @@ router.post("/login", async (req, res) => {
           algorithm: "HS256",
         }
       );
-      res.cookie("jwt", token, { httpOnly: true });
+      res.cookie("jwt", token, {
+        httpOnly: true,
+        domain: "https://group-class-backend.onrender.com",
+      });
       res.status(200).json({
         firstName: loginUser.firstName,
         lastName: loginUser.lastName,
