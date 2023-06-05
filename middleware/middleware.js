@@ -91,7 +91,7 @@ function checkToken(req, res, next) {
   console.log(req.cookies);
   if (req.cookies && req.cookies.jwt) {
     let token = req.cookies.jwt;
-    console.log(req.cookies);
+    console.log(req.cookies, "should be cookies");
 
     try {
       if (jwt.verify(token, "jwt-secret")) {
