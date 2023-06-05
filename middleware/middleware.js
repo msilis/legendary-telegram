@@ -88,10 +88,9 @@ async function checkUserVote(req, res, next) {
 //JSON web token authentication ===============================================
 
 function checkToken(req, res, next) {
-  console.log(req.cookies);
+  console.log(req.cookies, "should be cookies");
   if (req.cookies && req.cookies.jwt) {
     let token = req.cookies.jwt;
-    console.log(req.cookies, "should be cookies");
 
     try {
       if (jwt.verify(token, "jwt-secret")) {
