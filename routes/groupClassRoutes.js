@@ -100,7 +100,7 @@ router.post("/login", async (req, res) => {
       );
       res.cookie("jwt", token, {
         httpOnly: true,
-        domain: "onrender.com",
+        domain: "localhost",
       });
       res.status(200).json({
         firstName: loginUser.firstName,
