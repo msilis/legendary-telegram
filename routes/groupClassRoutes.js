@@ -212,6 +212,7 @@ router.post("/saveGame", async (req, res) => {
 
 router.post("/getSavedGames", async (req, res) => {
   const userId = req.body.saveUser;
+  console.log(userId, "userId from getSavedGames");
   try {
     const findUserGames = await SaveGame.find({ saveUser: userId });
     res.status(200).json(findUserGames);
