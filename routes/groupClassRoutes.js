@@ -100,7 +100,8 @@ router.post("/login", async (req, res) => {
       );
       res.cookie("jwt", token, {
         httpOnly: true,
-        domain: "localhost",
+        secure: true,
+        sameSite: "none",
       });
       res.status(200).json({
         firstName: loginUser.firstName,
