@@ -71,7 +71,7 @@ async function checkUserVote(req, res, next) {
     _id: gameIdToCheck,
     voteUsers: { $elemMatch: { $eq: userIdToCheck } },
   });
-  console.log(locateUserInVoteRecord, "locateUserInVoteRecord")
+  console.log(locateUserInVoteRecord, "locateUserInVoteRecord");
   //If userId is found, return that user already has voted on game
 
   if (locateUserInVoteRecord !== null) {
@@ -91,6 +91,7 @@ function checkToken(req, res, next) {
   console.log(req.cookies);
   if (req.cookies && req.cookies.jwt) {
     let token = req.cookies.jwt;
+    console.log(req.cookies);
 
     try {
       if (jwt.verify(token, "jwt-secret")) {
