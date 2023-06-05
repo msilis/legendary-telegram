@@ -89,7 +89,7 @@ async function checkUserVote(req, res, next) {
 
 function checkToken(req, res, next) {
   console.log(req.headers, "request headers");
-  console.log(req.x - custom - cookie, "should be cookies");
+  console.log(req.cookies, "should be cookies");
   if (req.cookies && req.cookies.jwt) {
     let token = req.cookies.jwt;
 
