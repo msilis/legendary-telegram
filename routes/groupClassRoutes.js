@@ -16,6 +16,10 @@ const {
   checkUserVote,
 } = require("../middleware/middleware");
 
+router.get("/", (req, res) => {
+  res.status(200).send("You have reached the right place!");
+});
+
 /* =========================================
 ||||||||||| Get all pieces ||||||||| |||||||
 ============================================ */
