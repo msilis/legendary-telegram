@@ -534,7 +534,7 @@ router.post("/deleteCreated", async (req, res) => {
 });
 
 //node-cron to keep server from going to sleep
-cron.schedule("/14 * * * *", () => {
+cron.schedule("*/14 * * * *", () => {
   http.get("https://group-class-backend.onrender.com");
 });
 
