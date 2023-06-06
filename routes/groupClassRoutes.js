@@ -8,8 +8,7 @@ const AddGame = require("../models/addGame");
 const AddVoteGame = require("../models/addVoteGame");
 const AddPermenantGame = require("../models/permenantGame");
 const jwt = require("jsonwebtoken");
-const cron = require("node-cron");
-const http = require("http");
+
 const {
   checkUserName,
   getUserById,
@@ -531,11 +530,6 @@ router.post("/deleteCreated", async (req, res) => {
   } catch (err) {
     res.status(500).send({ msg: "There was an errir with the server." });
   }
-});
-
-//node-cron to keep server from going to sleep
-cron.schedule("*/14 * * * *", () => {
-  http.get("https://group-class-backend.onrender.com");
 });
 
 module.exports = router;
