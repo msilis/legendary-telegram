@@ -6,8 +6,6 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const cron = require("node-cron");
-const http = require("http");
 
 mongoose.connect(process.env.DATABASE_URL, { dbName: "SuzukiGroup" });
 mongoose.set("strictQuery", true);
@@ -29,10 +27,5 @@ app.use(bodyParser.json());
 app.use(cors(corsOptions));
 app.use("/", groupRouter);
 app.use(express.json());
-
-//node-cron to keep server from going to sleep
-cron.schedule("/14 * * * *", () => {
-  http.get("https://group-class-backend.onrender.com");
-});
 
 app.listen(port, () => console.log(`Listening on ${port}`));
