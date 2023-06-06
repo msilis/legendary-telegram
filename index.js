@@ -20,6 +20,7 @@ const corsOptions = {
     "http://localhost:5173",
     "http://10.128.172.126:5173",
     "http://127.0.0.1:8080",
+    "https://curious-maamoul-a56afb.netlify.app/",
   ],
   credentials: true,
 };
