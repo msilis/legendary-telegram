@@ -58,7 +58,6 @@ router.post("/newPiece", checkToken, async (req, res) => {
 ||||||||||| Add new user to database |||||||
 ============================================ */
 router.post("/addUser", checkUserName, async (req, res) => {
-  console.log(req.body);
   const user = new User({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -137,7 +136,6 @@ router.get("/tags", async (req, res) => {
 ========================================= */
 router.post("/techniqueSearch", async (req, res) => {
   const tagToSearch = req.body.tagToSearch;
-  console.log(req.body.tagToSearch);
   try {
     const getPieces = await Piece.find({ techniqueTags: tagToSearch });
     res.status(200).json(getPieces);
@@ -221,7 +219,6 @@ router.post("/saveGame", async (req, res) => {
 
 router.post("/getSavedGames", async (req, res) => {
   const userId = req.body.saveUser;
-  console.log(userId, "userId from getSavedGames");
   try {
     const findUserGames = await SaveGame.find({ saveUser: userId });
     res.status(200).json(findUserGames);
@@ -275,7 +272,6 @@ router.post("/deleteSavedGame", async (req, res) => {
 =========================================== */
 
 router.patch("/editCreated/:id", getGameById, async (req, res) => {
-  console.log(req.body, "request");
   if (req.body.gameName !== null) {
     res.editGame.gameName = req.body.gameName;
   }
@@ -402,7 +398,6 @@ router.post("/gamesForVote", checkToken, async (req, res) => {
 
 router.post("/trackVote", checkUserVote, checkToken, async (req, res) => {
   /* 0 is no vote, 1 is yes vote */
-  console.log(req.body, "from trackVote");
   let whichVote;
   const filter = { _id: req.body.gameId };
   const options = { upsert: false };
@@ -429,7 +424,6 @@ router.post("/trackVote", checkUserVote, checkToken, async (req, res) => {
   }
   try {
     const voteUpdate = await AddVoteGame.updateOne(filter, whichVote, options);
-    console.log("Vote has been updated: ", voteUpdate);
     const getVoteTotal = await AddVoteGame.findOne({ _id: req.body.gameId });
     //Add game here
     if (getVoteTotal.yesVote >= 22) {
@@ -520,8 +514,6 @@ router.get("/getGameTechniques", async (req, res) => {
 =========================================== */
 router.post("/deleteCreated", async (req, res) => {
   const createdGameToDelete = req.body.gameToDelete;
-  console.log(createdGameToDelete, "createdGameToDelete");
-  console.log(req.body);
   try {
     const deleteCreatedGame = await AddGame.deleteOne({
       _id: createdGameToDelete,
