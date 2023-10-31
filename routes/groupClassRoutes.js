@@ -54,6 +54,12 @@ router.post("/newPiece", checkToken, async (req, res) => {
   }
 });
 
+// Check if user exists
+
+router.get("/checkGoogleUser", async (req, res) => {
+  const userToCheck = req.body.email;
+});
+
 /* =========================================
 ||||||||||| Add new user to database |||||||
 ============================================ */
