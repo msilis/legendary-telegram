@@ -95,3 +95,20 @@ Content-Type: application/json
 ###
 GET http://localhost:8080/gameSearch
 Content-Type: application/json
+
+###
+POST http://localhost:8080/checkGoogleUser
+Content-Type: application/json
+
+{
+    "email": "mikssilis@gmail.com"
+}
+
+###
+POST http://localhost:8080/addGoogleUser
+Content-Type: application/json
+
+{
+    "email": "mikssilis@gmail.com",
+    "fullName": "Miks Silis"
+}

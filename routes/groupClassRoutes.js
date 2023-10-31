@@ -28,6 +28,23 @@ router.get("/", (req, res) => {
 router.get("/getPieces", async (req, res) => {
   try {
     const allPieces = await Piece.find({});
+    const mongoose = require("mongoose");
+
+    const googleUserSchema = new mongoose.Schema(
+      {
+        fullName: {
+          type: String,
+          require: true,
+        },
+        email: {
+          type: String,
+          require: true,
+        },
+      },
+      { collection: "googleUsers" }
+    );
+
+    module.exports = mongoose.model("GoogleUser", googleUserSchema);
     res.status(201).json(allPieces);
   } catch (err) {
     console.log(err);
@@ -49,6 +66,7 @@ router.post("/newPiece", checkToken, async (req, res) => {
   try {
     const sendPiece = await addPiece.save();
     res.status(200).json(sendPiece);
+    return;
   } catch (err) {
     console.log(err);
     res.status(500).send({ msg: "There was an error adding a new piece." });
@@ -61,13 +79,17 @@ router.post("/checkGoogleUser", async (req, res) => {
   const userToCheck = req.body.email;
   console.log(userToCheck, "userToCheck");
   try {
+    console.log("finding user");
     const findUser = await GoogleUser.findOne({ email: userToCheck });
     if (findUser) {
+      console.log("success response triggered");
       res.status(200).json(findUser);
+    } else {
+      res.status(404).send({ msg: "User not found" });
     }
   } catch (err) {
     console.log(err);
-    res.status(404).send({ msg: "User not found" });
+    res.status(500).send({ msg: "There was a server error" });
   }
 });
 
