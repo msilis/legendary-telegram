@@ -73,12 +73,18 @@ router.get("/checkGoogleUser", async (req, res) => {
 // Add new Google user to database
 
 router.post("/addGoogleUser", async (req, res) => {
-    const addGoogleUser = new GoogleUser({
-        fullName: req.body.fullName,
-        email: req.body.email,
-        });
-    })
- })
+  const addGoogleUser = new GoogleUser({
+    fullName: req.body.fullName,
+    email: req.body.email,
+  });
+  try {
+    await addGoogleUser.save();
+    res.status(201).send("Google user information saved");
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ msg: "There was an error adding the Google user." });
+  }
+});
 
 /* =========================================
 ||||||||||| Add new user to database |||||||
