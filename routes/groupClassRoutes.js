@@ -77,12 +77,9 @@ router.post("/newPiece", checkToken, async (req, res) => {
 
 router.post("/checkGoogleUser", async (req, res) => {
   const userToCheck = req.body.email;
-  console.log(userToCheck, "userToCheck");
   try {
-    console.log("finding user");
     const findUser = await GoogleUser.findOne({ email: userToCheck });
     if (findUser) {
-      console.log("success response triggered");
       res.status(200).json(findUser);
     } else {
       res.status(404).send({ msg: "User not found" });
@@ -100,10 +97,9 @@ router.post("/addGoogleUser", async (req, res) => {
     fullName: req.body.fullName,
     email: req.body.email,
   });
-  console.log(addGoogleUser, "addGoogleUser");
   try {
-    await addGoogleUser.save();
-    res.status(201).send("Google user information saved");
+    const addGoogleUserToDatabase = await addGoogleUser.save();
+    res.status(201).send(addGoogleUserToDatabase);
   } catch (err) {
     console.log(err);
     res.status(500).send({ msg: "There was an error adding the Google user." });
