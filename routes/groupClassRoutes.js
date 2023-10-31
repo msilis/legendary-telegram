@@ -94,9 +94,10 @@ router.post("/checkGoogleUser", async (req, res) => {
 
 router.post("/addGoogleUser", async (req, res) => {
   const addGoogleUser = new GoogleUser({
-    fullName: req.body.fullName,
-    email: req.body.email,
+    fullName: req.body.email,
+    email: req.body.name,
   });
+  console.log(addGoogleUser, "addGoogleUser");
   try {
     const addGoogleUserToDatabase = await addGoogleUser.save();
     res.status(201).send(addGoogleUserToDatabase);
