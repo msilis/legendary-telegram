@@ -59,6 +59,7 @@ router.post("/newPiece", checkToken, async (req, res) => {
 
 router.post("/checkGoogleUser", async (req, res) => {
   const userToCheck = req.body.email;
+  console.log(userToCheck, "userToCheck");
   try {
     const findUser = await GoogleUser.findOne({ email: userToCheck });
     if (findUser) {
@@ -77,6 +78,7 @@ router.post("/addGoogleUser", async (req, res) => {
     fullName: req.body.fullName,
     email: req.body.email,
   });
+  console.log(addGoogleUser, "addGoogleUser");
   try {
     await addGoogleUser.save();
     res.status(201).send("Google user information saved");
