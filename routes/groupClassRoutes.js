@@ -57,7 +57,7 @@ router.post("/newPiece", checkToken, async (req, res) => {
 
 // Check if user exists
 
-router.get("/checkGoogleUser", async (req, res) => {
+router.post("/checkGoogleUser", async (req, res) => {
   const userToCheck = req.body.email;
   try {
     const findUser = await GoogleUser.findOne({ email: userToCheck });
