@@ -7,6 +7,7 @@ const SaveGame = require("../models/saveGame");
 const AddGame = require("../models/addGame");
 const AddVoteGame = require("../models/addVoteGame");
 const AddPermenantGame = require("../models/permenantGame");
+const GoogleUser = require("../models/googleUser");
 const jwt = require("jsonwebtoken");
 
 const {
@@ -58,6 +59,15 @@ router.post("/newPiece", checkToken, async (req, res) => {
 
 router.get("/checkGoogleUser", async (req, res) => {
   const userToCheck = req.body.email;
+  try {
+    const finduser = await GoogleUser.findOne({ email: userToCheck });
+    if (findUser) {
+      res.status(200).json(findUser);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(404).send({ msg: "User not found" });
+  }
 });
 
 /* =========================================
