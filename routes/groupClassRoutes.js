@@ -60,7 +60,7 @@ router.post("/newPiece", checkToken, async (req, res) => {
 router.get("/checkGoogleUser", async (req, res) => {
   const userToCheck = req.body.email;
   try {
-    const finduser = await GoogleUser.findOne({ email: userToCheck });
+    const findUser = await GoogleUser.findOne({ email: userToCheck });
     if (findUser) {
       res.status(200).json(findUser);
     }
@@ -69,6 +69,16 @@ router.get("/checkGoogleUser", async (req, res) => {
     res.status(404).send({ msg: "User not found" });
   }
 });
+
+// Add new Google user to database
+
+router.post("/addGoogleUser", async (req, res) => {
+    const addGoogleUser = new GoogleUser({
+        fullName: req.body.fullName,
+        email: req.body.email,
+        });
+    })
+ })
 
 /* =========================================
 ||||||||||| Add new user to database |||||||
