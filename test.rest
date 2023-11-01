@@ -110,5 +110,5 @@ Content-Type: application/json
 
 {
     "email": "mikssilis@gmail.com",
-    "fullName": "Miks Silis"
+    "name": "Miks Silis"
 }
