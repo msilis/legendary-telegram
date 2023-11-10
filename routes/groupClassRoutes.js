@@ -129,6 +129,38 @@ router.post("/addUser", checkUserName, async (req, res) => {
   }
 });
 
+router.post("loginGoogleUser", async (req, res) => {
+  const googleUser = req.body.email;
+  const googleToken = req.body.token;
+
+  try {
+    const checkGoogleUser = await GoogleUser.findOne({ email: googleUser });
+    if (!checkGoogleUser) {
+      res.status(404).send("User not found");
+    } else if (checkGoogleUser != null) {
+      let token = jwt.sign(
+        {
+          userName: usr,
+        },
+        "jwt-secret",
+        {
+          algorithm: "HS256",
+        }
+      );
+      res.cookie("jwt", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      });
+      res.status(200).json({
+        email: checkGoogleUser.email,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 /* =======================================
 |||||||||| Login User ||||||||||||||||||||
 ========================================== */
