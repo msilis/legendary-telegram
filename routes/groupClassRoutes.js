@@ -141,7 +141,6 @@ router.post("/login", async (req, res) => {
     if (!loginUser) {
       res.status(401).send("Username or password incorrect!");
     } else if (loginUser != null) {
-      console.log(loginUser);
       let token = jwt.sign(
         {
           userName: usr,
