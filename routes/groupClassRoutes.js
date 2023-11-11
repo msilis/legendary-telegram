@@ -80,6 +80,20 @@ router.post("/checkGoogleUser", async (req, res) => {
   try {
     const findUser = await GoogleUser.findOne({ email: userToCheck });
     if (findUser) {
+      let token = jwt.sign(
+        {
+          userName: usr,
+        },
+        "jwt-secret",
+        {
+          algorithm: "HS256",
+        }
+      );
+      res.cookie("jwt", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      });
       res.status(200).json(findUser);
     } else {
       res.status(404).send({ msg: "User not found" });
