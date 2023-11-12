@@ -79,8 +79,7 @@ router.post("/checkGoogleUser", async (req, res) => {
   const userToCheck = req.body.email;
   try {
     const findUser = await GoogleUser.findOne({ email: userToCheck });
-    if (findUser) {
-      console.log(findUser, "findUser");
+    if (findUser != null) {
       let token = jwt.sign(
         {
           userName: findUser.fullName,
@@ -90,6 +89,7 @@ router.post("/checkGoogleUser", async (req, res) => {
           algorithm: "HS256",
         }
       );
+      console.log(token, "token");
       res.cookie("jwt", token, {
         httpOnly: true,
         secure: true,
