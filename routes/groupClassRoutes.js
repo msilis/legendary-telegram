@@ -80,9 +80,10 @@ router.post("/checkGoogleUser", async (req, res) => {
   try {
     const findUser = await GoogleUser.findOne({ email: userToCheck });
     if (findUser) {
+      console.log(findUser, "findUser");
       let token = jwt.sign(
         {
-          userName: userToCheck,
+          userName: findUser.fullName,
         },
         "jwt-secret",
         {
@@ -111,7 +112,7 @@ router.post("/addGoogleUser", async (req, res) => {
     fullName: req.body.name,
     email: req.body.email,
   });
-  console.log(addGoogleUser, "addGoogleUser");
+
   try {
     const addGoogleUserToDatabase = await addGoogleUser.save();
     res.status(201).send(addGoogleUserToDatabase);
@@ -154,7 +155,7 @@ router.post("loginGoogleUser", async (req, res) => {
     } else if (checkGoogleUser != null) {
       let token = jwt.sign(
         {
-          userName: googleUser,
+          userName: checkGoogleUser.fullName,
         },
         "jwt-secret",
         {
