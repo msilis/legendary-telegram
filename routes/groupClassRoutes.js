@@ -82,7 +82,7 @@ router.post("/checkGoogleUser", async (req, res) => {
     if (findUser) {
       let token = jwt.sign(
         {
-          userName: usr,
+          userName: userToCheck,
         },
         "jwt-secret",
         {
