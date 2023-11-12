@@ -44,7 +44,6 @@ router.get("/getPieces", async (req, res) => {
       { collection: "googleUsers" }
     );
 
-    module.exports = mongoose.model("GoogleUser", googleUserSchema);
     res.status(201).json(allPieces);
   } catch (err) {
     console.log(err);
