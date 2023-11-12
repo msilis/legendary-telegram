@@ -82,7 +82,6 @@ router.post("/checkGoogleUser", async (req, res) => {
           algorithm: "HS256",
         }
       );
-      console.log(token, "token");
       res.cookie("jwt", token, {
         httpOnly: true,
         secure: true,
