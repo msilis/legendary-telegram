@@ -22,9 +22,6 @@ router.get("/", (req, res) => {
   res.status(200).send("You have reached the right place!");
 });
 
-/* =========================================
-||||||||||| Get all pieces ||||||||| |||||||
-============================================ */
 router.get("/getPieces", async (req, res) => {
   try {
     const allPieces = await Piece.find({});
@@ -51,9 +48,6 @@ router.get("/getPieces", async (req, res) => {
   }
 });
 
-/* ===========================================
-||||||||||| Add new piece to database ||||||||
-============================================== */
 router.post("/newPiece", checkToken, async (req, res) => {
   console.log(req.body);
 
