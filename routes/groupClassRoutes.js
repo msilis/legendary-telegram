@@ -154,7 +154,7 @@ router.post("loginGoogleUser", async (req, res) => {
     } else if (checkGoogleUser != null) {
       let token = jwt.sign(
         {
-          userName: usr,
+          userName: googleUser,
         },
         "jwt-secret",
         {
