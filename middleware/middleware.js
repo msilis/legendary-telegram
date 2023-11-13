@@ -41,12 +41,17 @@ async function getUserById(req, res, next) {
 }
 
 async function getGoogleUser(req, res, next) {
+  console.log(req.body, "req.body from getGoogleUser");
   const googleUserToFind = req.body.googleUserId;
+  console.log(googleUserToFind, "googleUserToFind");
   const locateGoogleUser = await googleUser.findOne({ _id: googleUserToFind });
+  console.log(locateGoogleUser, "locateGoogleUser");
   if (locateGoogleUser === null) {
     res.status(404).send("Google User not found in database");
+    return;
   }
   res.googleUser = locateGoogleUser;
+  next();
 }
 
 //Get created game by Id ==================================================
@@ -60,8 +65,7 @@ async function getGameById(req, res, next) {
     res.status(404).send("Game not found");
   } else {
     //If game is found, pass along game info
-    console.log(gameToFind, "game to find - from middleware");
-    console.log(locateGameToEdit, "locateGameToEdit - from middleware");
+
     editGame = locateGameToEdit;
     res.editGame = editGame;
     next();

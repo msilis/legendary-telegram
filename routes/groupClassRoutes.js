@@ -369,15 +369,24 @@ router.patch(
   getGoogleUser,
   checkToken,
   async (req, res) => {
+    console.log(req.body, "req.body from updateGoogleDisplayName");
     if (req.body.googleDisplayName != null) {
-      res.user.googleDisplayName = req.body.googleDisplayName;
+      res.googleUser.displayName = req.body.googleDisplayName;
+      console.log(
+        res.googleUser.displayName,
+        "res.googleUser.googleDisplayName"
+      );
     }
     try {
       const updateGoogleDisplayName = await res.googleUser.save();
+      console.log(updateGoogleDisplayName, "updateGoogleDisplayName");
       res.status(200).send({
-        googleDisplayName: updateGoogleDisplayName.googleDisplayName,
+        displayName: updateGoogleDisplayName.googleDisplayName,
       });
     } catch (error) {
+      res
+        .status(500)
+        .send({ msg: "There was an error updating the display name" });
       console.log(error);
     }
   }
