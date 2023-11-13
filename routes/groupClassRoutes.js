@@ -100,8 +100,9 @@ router.post("/checkGoogleUser", async (req, res) => {
 
 router.post("/addGoogleUser", async (req, res) => {
   const addGoogleUser = new GoogleUser({
-    fullName: req.body.name,
+    fullName: req.body.fullName,
     email: req.body.email,
+    displayName: req.body.displayName,
   });
 
   try {
