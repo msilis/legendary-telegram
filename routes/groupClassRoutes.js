@@ -418,7 +418,7 @@ router.patch("/updateUser", getUserById, checkToken, async (req, res) => {
 
 router.patch(
   "/updateGoogleDisplayName",
-  getByUserId,
+  getUserById,
   checkToken,
   async (req, res) => {
     if (req.body.googleDisplayName != null) {
