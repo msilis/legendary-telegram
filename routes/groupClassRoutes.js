@@ -66,8 +66,6 @@ router.post("/newPiece", checkToken, async (req, res) => {
   }
 });
 
-// Check if user exists
-
 router.post("/checkGoogleUser", async (req, res) => {
   const userToCheck = req.body.email;
   try {
@@ -114,9 +112,6 @@ router.post("/addGoogleUser", async (req, res) => {
   }
 });
 
-/* =========================================
-||||||||||| Add new user to database |||||||
-============================================ */
 router.post("/addUser", checkUserName, async (req, res) => {
   const user = new User({
     firstName: req.body.firstName,
@@ -168,9 +163,6 @@ router.post("loginGoogleUser", async (req, res) => {
   }
 });
 
-/* =======================================
-|||||||||| Login User ||||||||||||||||||||
-========================================== */
 router.post("/login", async (req, res) => {
   const usr = req.body.userName;
   const pwd = req.body.password;
@@ -208,10 +200,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-/* ======================================
-||||||| Get technique tags ||||||||||||||
-========================================= */
-
 router.get("/tags", async (req, res) => {
   try {
     const getTags = await Piece.find({}, { techniqueTags: 1, _id: 0 });
@@ -222,9 +210,6 @@ router.get("/tags", async (req, res) => {
   }
 });
 
-/* ======================================
-||||||||||| Technique Tag Query |||||||||
-========================================= */
 router.post("/techniqueSearch", async (req, res) => {
   const tagToSearch = req.body.tagToSearch;
   try {
@@ -236,10 +221,6 @@ router.post("/techniqueSearch", async (req, res) => {
       .send("There was an error getting technique tags for pieces");
   }
 });
-
-/* =======================================
-|||||||||| Game Technique ||||||||||||||||
-========================================== */
 
 router.get("/gameTechniques", async (req, res) => {
   try {
@@ -253,9 +234,6 @@ router.get("/gameTechniques", async (req, res) => {
   }
 });
 
-/* =======================================
-||||||||| Get Games|||||||||||||||||||||||
-========================================== */
 router.get("/gameSearch", async (req, res) => {
   const gameIdeas = [];
   try {
@@ -266,10 +244,6 @@ router.get("/gameSearch", async (req, res) => {
     res.status(500).send("There was an error searching for games");
   }
 });
-
-/* =======================================
-||||||||| Get Random Game ||||||||||||||||
-========================================== */
 
 router.get("/randomGame", checkToken, async (req, res) => {
   const randomGameIdeas = [];
@@ -284,10 +258,6 @@ router.get("/randomGame", checkToken, async (req, res) => {
     res.status(500).send({ msg: "There was an error getting the random game" });
   }
 });
-
-/* =======================================
-||||||||| Save Game ||||||||||||||||||||||
-========================================== */
 
 router.post("/saveGame", async (req, res) => {
   const saveGame = new SaveGame({
@@ -304,10 +274,6 @@ router.post("/saveGame", async (req, res) => {
   }
 });
 
-/* ========================================
-|||||||||| Get user's saved games |||||||||
-=========================================== */
-
 router.post("/getSavedGames", async (req, res) => {
   const userId = req.body.saveUser;
   try {
@@ -318,10 +284,6 @@ router.post("/getSavedGames", async (req, res) => {
     res.status(500).send({ msg: "There was an error getting saved games" });
   }
 });
-
-/* ========================================
-||||||| Get User's Created Games |||||||||||
-==========================================*/
 
 router.post("/getUserCreatedGames", async (req, res) => {
   const userId = req.body.userId;
@@ -334,18 +296,10 @@ router.post("/getUserCreatedGames", async (req, res) => {
   }
 });
 
-/* =========================================
-||||||||| Get User's Created Game by ID|||||
-============================================ */
-
 router.get("/getOneUserGame/:id", getGameById, async (req, res) => {
   console.log(res.editGame.gameName, "should be game name");
   res.status(200).send(res.editGame);
 });
-
-/* =======================================
-|||||||||| Delete Saved Game ||||||||||||| 
-==========================================*/
 
 router.post("/deleteSavedGame", async (req, res) => {
   const gameIdToDelete = req.body.gameToDelete;
@@ -357,10 +311,6 @@ router.post("/deleteSavedGame", async (req, res) => {
     res.status(500).send({ msg: "There was an error deleting the game" });
   }
 });
-
-/* ========================================
-|||||||||| Edit Created Game ||||||||||||||
-=========================================== */
 
 router.patch("/editCreated/:id", getGameById, async (req, res) => {
   if (req.body.gameName !== null) {
@@ -387,10 +337,6 @@ router.patch("/editCreated/:id", getGameById, async (req, res) => {
     res.status(500).send({ message: err.message });
   }
 });
-
-/* =======================================
-|||||||||| Update User Info  ||||||||||||| 
-==========================================*/
 
 router.patch("/updateUser", getUserById, checkToken, async (req, res) => {
   if (req.body.firstName != null) {
@@ -435,10 +381,6 @@ router.patch(
   }
 );
 
-/* ========================================
-||||||||| Add Game ||||||||||||||||||||||||
-=========================================== */
-
 router.post("/addGame", async (req, res) => {
   const addGame = new AddGame({
     gameName: req.body.gameName,
@@ -458,10 +400,6 @@ router.post("/addGame", async (req, res) => {
     });
   }
 });
-
-/* =========================================
-||||||||| Add game for voting |||||||||||||||
-============================================ */
 
 router.post("/addGameForVote", async (req, res) => {
   const addVoteGame = new AddVoteGame({
@@ -485,10 +423,6 @@ router.post("/addGameForVote", async (req, res) => {
   }
 });
 
-/* =========================================
-|||||||| Get Vote Games ||||||||||||||||||||
-============================================ */
-
 router.post("/gamesForVote", checkToken, async (req, res) => {
   try {
     const getGamesForVote = await AddVoteGame.find();
@@ -500,10 +434,6 @@ router.post("/gamesForVote", checkToken, async (req, res) => {
       .send({ msg: "There was an error getting the games for vote." });
   }
 });
-
-/* ==========================================
-||||||||| Track votes |||||||||||||||||||||||
-============================================= */
 
 router.post("/trackVote", checkUserVote, checkToken, async (req, res) => {
   /* 0 is no vote, 1 is yes vote */
@@ -561,10 +491,6 @@ router.post("/trackVote", checkUserVote, checkToken, async (req, res) => {
   }
 });
 
-/* =========================================
-|||||||||| Get only votes ||||||||||||||||||
-============================================ */
-
 router.get("/getVoteTotals", async (req, res) => {
   try {
     const getVotes = await AddVoteGame.find(
@@ -580,10 +506,6 @@ router.get("/getVoteTotals", async (req, res) => {
     console.log(err);
   }
 });
-
-/* ==========================================
-||||||||| Find all games user has voted on |||
-============================================= */
 
 router.post("/getUserVotes", async (req, res) => {
   const userToCheck = req.body.userId;
@@ -604,10 +526,6 @@ router.post("/getUserVotes", async (req, res) => {
   }
 });
 
-/* =========================================
-|||||||||| Get Game Techniques |||||||||||||
-============================================ */
-
 router.get("/getGameTechniques", async (req, res) => {
   try {
     const getGameTags = await Game.find({}, { gameTechnique: 1, _id: 0 });
@@ -618,9 +536,6 @@ router.get("/getGameTechniques", async (req, res) => {
   }
 });
 
-/* =========================================
-|||||||||| Delete Created Game |||||||||||||
-=========================================== */
 router.post("/deleteCreated", async (req, res) => {
   const createdGameToDelete = req.body.gameToDelete;
   try {
@@ -629,7 +544,7 @@ router.post("/deleteCreated", async (req, res) => {
     });
     res.status(201).send(deleteCreatedGame);
   } catch (err) {
-    res.status(500).send({ msg: "There was an errir with the server." });
+    res.status(500).send({ msg: "There was an error with the server." });
   }
 });
 
