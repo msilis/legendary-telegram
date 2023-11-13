@@ -10,6 +10,7 @@ const { ObjectId } = require("mongoose").Types;
 
 //Check if username exists ===============================================
 const User = require("../models/users");
+const googleUser = require("../models/googleUser");
 
 async function checkUserName(req, res, next) {
   const usernameToFind = req.body.userName;
@@ -37,6 +38,15 @@ async function getUserById(req, res, next) {
   console.log(locateUser);
   res.user = locateUser;
   next();
+}
+
+async function getGoogleUser(req, res, next) {
+  const googleUserToFind = req.body.googleUserId;
+  const locateGoogleUser = await googleUser.findOne({ _id: googleUserToFind });
+  if (locateGoogleUser === null) {
+    res.status(404).send("Google User not found in database");
+  }
+  res.googleUser = locateGoogleUser;
 }
 
 //Get created game by Id ==================================================

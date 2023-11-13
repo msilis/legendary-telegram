@@ -418,14 +418,14 @@ router.patch("/updateUser", getUserById, checkToken, async (req, res) => {
 
 router.patch(
   "/updateGoogleDisplayName",
-  getUserById,
+  getGoogleUser,
   checkToken,
   async (req, res) => {
     if (req.body.googleDisplayName != null) {
       res.user.googleDisplayName = req.body.googleDisplayName;
     }
     try {
-      const updateGoogleDisplayName = await res.user.save();
+      const updateGoogleDisplayName = await res.googleUser.save();
       res.status(200).send({
         googleDisplayName: updateGoogleDisplayName.googleDisplayName,
       });
