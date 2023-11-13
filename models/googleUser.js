@@ -9,7 +9,12 @@ const googleUserSchema = new mongoose.Schema(
     email: {
       type: String,
       require: true,
-    },
+        },
+        displayName: {
+            type: String,
+            require: true,
+        },
+    }
   },
   { collection: "googleUsers" }
 );

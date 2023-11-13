@@ -16,6 +16,7 @@ const {
   checkToken,
   getGameById,
   checkUserVote,
+  getGoogleUser,
 } = require("../middleware/middleware");
 
 router.get("/", (req, res) => {

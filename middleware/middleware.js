@@ -123,4 +123,5 @@ module.exports = {
   checkToken,
   getGameById,
   checkUserVote,
+  getGoogleUser,
 };
