@@ -405,7 +405,6 @@ router.patch("/updateUser", getUserById, checkToken, async (req, res) => {
 
   try {
     const update = await res.user.save();
-    console.log("updated");
     res.status(200).send({
       firstName: update.firstName,
       lastName: update.lastName,
@@ -416,6 +415,25 @@ router.patch("/updateUser", getUserById, checkToken, async (req, res) => {
     res.status(500).send("There was an error with the server");
   }
 });
+
+router.patch(
+  "/updateGoogleDisplayName",
+  getByUserId,
+  checkToken,
+  async (req, res) => {
+    if (req.body.googleDisplayName != null) {
+      res.user.googleDisplayName = req.body.googleDisplayName;
+    }
+    try {
+      const updateGoogleDisplayName = await res.user.save();
+      res.status(200).send({
+        googleDisplayName: updateGoogleDisplayName.googleDisplayName,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 
 /* ========================================
 ||||||||| Add Game ||||||||||||||||||||||||
